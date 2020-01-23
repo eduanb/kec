@@ -24,4 +24,16 @@ class CollectionExtensionTests {
 		val o2: String? = null
 		assertEquals(null, listOfNotNull(o1, o2).nullIfEmpty())
 	}
+
+	@Test
+	fun `test use case`() {
+		val list = (1..4).map { listOf(0..it) }.use {
+			flatten()
+		}
+		assertEquals(listOf(0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4), list)
+
+		list.filter { it % 2 == 0 }.distinct().use {
+			assertEquals(listOf(0, 2, 4), this)
+		}
+	}
 }
