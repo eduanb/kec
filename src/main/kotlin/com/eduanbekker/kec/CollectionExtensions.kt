@@ -20,7 +20,7 @@ fun <T> List<T>.nullIfEmpty(): List<T>? {
 /**
  * Use the entire collection. Useful for sending the result of a stream of mappings
  * or filters etc etc, or initializing objects that require collections as parameters.
- * Same implementation as a scoping function run however limited to collections with
+ * Same implementation as the scoping function `run` however limited to collections with
  * a more descriptive function name.
  */
 fun <T : Collection<Any>, R> T.use(block: T.() -> R): R {
