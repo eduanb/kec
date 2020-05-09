@@ -26,11 +26,3 @@ fun <T> List<T>.nullIfEmpty(): List<T>? {
 fun <T : Collection<Any>, R> T.use(block: T.() -> R): R {
 	return block()
 }
-
-/**
- * Generally it isn't necessary to convert a range to a list but it did come
- * handy this one time in the use extension function test case
- */
-fun listOf(range: IntRange): List<Int> {
-	return range.mapTo(ArrayList(), { x -> x })
-}

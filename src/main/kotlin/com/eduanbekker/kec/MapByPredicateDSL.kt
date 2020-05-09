@@ -1,52 +1,30 @@
 package com.eduanbekker.kec
 
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
+import com.natpryce.Failure
+import com.natpryce.Result
+import com.natpryce.Success
 
-@ExperimentalContracts
-fun <T> Iterable<T>.mapByPredicate(block: MBPBuilder<T>.() -> Unit): Iterable<T> {
-	val newBlock = MBPBuilder<T>().apply(block).build()
+inline fun <T, reified S, reified F> Iterable<T>.mapAsResult(noinline predicate: (T) -> Boolean, block: MBPBuilder<T, S, F>.() -> Unit): List<Result<S, F>> {
+	val newBlock = MBPBuilder<T, S, F>().apply(block).build(predicate)
 
-	return mapTo(ArrayList<T>(), newBlock)
+	return mapTo(ArrayList(), newBlock)
 }
 
-class MBPBuilder<T> {
-	private var pred: (T.() -> Boolean)? = null
-	private var trans: (T.() -> T)? = null
+class MBPBuilder<T, S, F> {
+	private lateinit var successBlock: (T.() -> S)
+
+	private lateinit var failureBlock: (T.() -> F)
 
 
-	fun predicate(predicate: (T) -> Boolean) {
-		pred = predicate
+	fun mapSuccess(transform: (T) -> S) {
+		successBlock = transform
 	}
 
-	fun map(transform: (T) -> T) {
-		trans = transform
+	fun mapFailure(transform: (T) -> F) {
+		failureBlock = transform
 	}
 
-
-	@ExperimentalContracts
-	fun build(): T.() -> T {
-
-	 	if(pred.requireNotNull() && trans.requireNotNull()) {
-
-			val passedPred: (T.() -> Boolean) = pred as T.() -> Boolean
-			val passedMap: (T.() -> T) = trans as T.() -> T
-
-			return { if(passedPred()) passedMap() else this }
-		}
-		error("Map and Predicate are required to create a map by predicate")
+	fun build(predicate: (T) -> Boolean): T.() -> Result<S, F> = {
+		if (predicate(this)) Success(successBlock(this)) else Failure(failureBlock(this))
 	}
-}
-
-@ExperimentalContracts
-fun <T> T?.requireNotNull(): Boolean {
-
-	contract {
-		returns(true) implies (this@requireNotNull != null)
-	}
-
-	require(this != null) {
-		"Map and Predicate are required to create a map by predicate"
-	}
-	return true
 }

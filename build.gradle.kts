@@ -17,6 +17,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation(kotlin("script-runtime"))
 
+	implementation("com.natpryce:result4k:2.0.0")
+
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")
 }

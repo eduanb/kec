@@ -27,7 +27,7 @@ class CollectionExtensionTests {
 
 	@Test
 	fun `test use case`() {
-		val list = (1..4).map { listOf(0..it) }.use {
+		val list = (1..4).map { (0..it).map { i -> i } }.use {
 			flatten()
 		}
 		assertEquals(listOf(0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4), list)

@@ -1,10 +1,8 @@
 package com.eduanbekker.kec
 
-inline class MapResult<L,R>(val pair: Pair<List<L>, List<R>>) {
-	fun failedList(): List<L> = pair.first
-
-	fun successList(): List<R> = pair.second
-}
+import com.natpryce.Failure
+import com.natpryce.Result
+import com.natpryce.Success
 
 
 /**
@@ -28,17 +26,14 @@ fun <T> Iterable<T>.mapByPredicate(predicate: (T) -> Boolean, transform: (T) -> 
  * pass the predicate and elements that fail. This can then be thought of as a mapping for a simple if else case
  * if true should return x else return y. Objects returned can be of different types.
  *
- * @return MapResult is a simple wrapper class for class Pair. Adds no functionality but makes accessing a failed list
- * and success list a bit more readable.
+ * @return Result is a simple wrapper class for class Success and failure created by natpryce. The library comes standard
+ * with built in mapSuccess and map failure functions so it is ideal for our use case.
  *
  */
-fun <T, L, R> Iterable<T>.mapByPredicate(predicate: T.() -> Boolean, passedTransform: (T) -> R, failedTransform: (T) -> L): MapResult<L,R> {
-	val leftList = mutableListOf<L>()
-	val rightList = mutableListOf<R>()
-
-	for (item in this) {
-		if(predicate(item)) rightList.add(passedTransform(item)) else leftList.add(failedTransform(item))
+fun <T, S, F> Iterable<T>.mapByPredicate(predicate: T.() -> Boolean, passedTransform: (T) -> S, failedTransform: (T) -> F): Iterable<Result<S, F>> {
+	val newTransform: T.() -> Result<S, F> = {
+		if (predicate(this)) Success(passedTransform(this)) else Failure(failedTransform(this))
 	}
 
-	return MapResult(leftList to rightList)
+	return mapTo(ArrayList(), newTransform)
 }
