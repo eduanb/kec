@@ -26,8 +26,8 @@ fun <T> Iterable<T>.mapByPredicate(predicate: (T) -> Boolean, transform: (T) -> 
  * pass the predicate and elements that fail. This can then be thought of as a mapping for a simple if else case
  * if true should return x else return y. Objects returned can be of different types.
  *
- * @return Result is a simple wrapper class for class Success and failure created by natpryce. The library comes standard
- * with built in mapSuccess and map failure functions so it is ideal for our use case.
+ * @return Result is a simple wrapper class for class Success and Failure created by natpryce. The library comes standard
+ * with built in mapSuccess and mapFailure functions so it is ideal for our use case.
  *
  */
 fun <T, S, F> Iterable<T>.mapByPredicate(predicate: T.() -> Boolean, passedTransform: (T) -> S, failedTransform: (T) -> F): Iterable<Result<S, F>> {
