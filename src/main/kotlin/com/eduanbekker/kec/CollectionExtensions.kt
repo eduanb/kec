@@ -5,7 +5,7 @@ package com.eduanbekker.kec
  * Returns a list containing only elements matching the given [predicate].
  */
 fun <T> List<T>.filterOn(predicate: T.() -> Boolean): List<T> {
-	return this.filter { predicate.invoke(it) }
+    return this.filter { predicate.invoke(it) }
 }
 
 /**
@@ -14,7 +14,7 @@ fun <T> List<T>.filterOn(predicate: T.() -> Boolean): List<T> {
  * instead of skipping that property. Often used in conjunction with listOfNotNull()
  */
 fun <T> List<T>.nullIfEmpty(): List<T>? {
-	return if (this.isEmpty()) null else this
+    return if (this.isEmpty()) null else this
 }
 
 /**
@@ -24,5 +24,25 @@ fun <T> List<T>.nullIfEmpty(): List<T>? {
  * a more descriptive function name.
  */
 fun <T : Collection<Any>, R> T.use(block: T.() -> R): R {
-	return block()
+    return block()
+}
+
+
+
+/**
+ * Map List to Index Map takes the index of an item in a list and stores the item with that index
+ * in a map, useful for translating simple lists to ordered pairs for consistencies through transactions
+ */
+
+fun <V, T : List<V>> T.toIndexedMap(): Map<Int, V> {
+    return mapIndexed {index, v -> index to v }.toMap()
+}
+
+/**
+ * Map List to Index MutableMap takes the index of an item in a list and stores the item with that index
+ * in a map, useful for translating simple lists to ordered pairs for consistencies through transactions,
+ * but returns a Mutable Map
+ */
+fun <V, T : List<V>> T.toIndexedMutableMap(): MutableMap<Int, V> {
+    return toIndexedMap().toMutableMap()
 }
